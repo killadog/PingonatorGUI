@@ -22,70 +22,77 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-            <GroupBox Header="Network(s)" HorizontalAlignment="Stretch" Padding="5">
+        <WrapPanel Grid.Row="0" HorizontalAlignment="Center">
+            <GroupBox Header="Network(s) to scan" HorizontalAlignment="Stretch" Padding="5" Margin="5">
                 <StackPanel>
                     <TextBox Name="TextBox_net" Text="192.168.0" HorizontalAlignment="Stretch" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Scan range" HorizontalAlignment="Stretch" Padding="5">
+            <GroupBox Header="Scan range" HorizontalAlignment="Stretch" Padding="5" Margin="5">
                 <StackPanel>
                     <WrapPanel>
                         <Label Content="From" />
-                        <TextBox Name="TextBox_begin" Text="21" Width="40" />
+                        <TextBox Name="TextBox_begin" Text="1" Width="30" />
                         <Label Content="to" />
-                        <TextBox Name="TextBox_end" Text="22" Width="40" />
+                        <TextBox Name="TextBox_end" Text="50" Width="30" />
                     </WrapPanel>
                     <StackPanel HorizontalAlignment="Stretch">
-                        <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" IsChecked="True"/>
-                        <TextBox Name="TextBox_exclude" HorizontalAlignment="Stretch" />
-                     </StackPanel>
+                        <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" IsChecked="False"/>
+                        <TextBox Name="TextBox_exclude" HorizontalAlignment="Stretch" IsEnabled="False" />
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Ports" HorizontalAlignment="Stretch" Padding="5">
-                <StackPanel HorizontalAlignment="Stretch">
-                    <CheckBox Name="CheckBox_ports" Content="Detect open ports" IsChecked="False"/>
-                    <TextBox Name="TextBox_ports" IsEnabled="False" />             
+            <GroupBox Header="Ports" HorizontalAlignment="Stretch" Padding="5" Margin="5">
+                <StackPanel>
+                    <CheckBox Name="CheckBox_ports" Content="Detect open ports" IsChecked="False" />
+                    <TextBox Name="TextBox_ports" IsEnabled="False" />
                 </StackPanel>
             </GroupBox>
-        </StackPanel>
+            <GroupBox Header="Options" HorizontalAlignment="Stretch" Padding="5" Margin="5">
+                <StackPanel>
+                    <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
+                    <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
+                    <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
+                    <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True"/>
+                    <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
+                    <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
+                </StackPanel>
+            </GroupBox>
+        </WrapPanel>
         <!-- <ComboBox Grid.Row="0" Name="ComboBox_Interfaces" HorizontalAlignment="Stretch" Margin="5" Height="24" SelectedIndex="0" Padding="8,4,0,0" IsEditable="False"/> -->
-        <GroupBox Grid.Row="1" Header="Options" HorizontalAlignment="Stretch">
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
-                <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
-                <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
-                <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True"/>
-                <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
-                <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
+        <Button Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Name="Button_Check" Content="Check" Margin="10" Background="LightGreen" IsEnabled="True" />
 
-            </StackPanel>
-        </GroupBox>
+        <DataGrid Grid.Row="2" Name="DataGridview" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="LightGray" AlternatingRowBackground="White">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="IP" Binding ="{Binding Grid_ip}"/>
+                <DataGridTextColumn Header="Name" Binding ="{Binding Grid_name}"/>
+                <DataGridTextColumn Header="MAC" Binding ="{Binding Grid_mac}"/>
+                <DataGridTextColumn Header="Vendor" Binding ="{Binding Grid_vendor}"/>
+                <DataGridTextColumn Header="Latency (ms)" Binding ="{Binding Grid_latency}"/>
+                <DataGridTextColumn Header="Open ports" Binding ="{Binding Grid_ports}"/>
+            </DataGrid.Columns>
+        </DataGrid >
 
 
-        <Button Grid.Row="3" VerticalAlignment="Top" HorizontalAlignment="Center" Name="Button_Check" Content="Check" Margin="10" Background="LightGreen" IsEnabled="True" />
-
-        <ListView Grid.Row="4" Name="listView" HorizontalAlignment="Stretch">
+        <!-- <ListView Grid.Row="2" Name="listView" HorizontalAlignment="Stretch">
             <ListView.View >
                 <GridView >
                     <GridViewColumn Header="IP" DisplayMemberBinding ="{Binding Grid_ip}"/>
                     <GridViewColumn Header="Name" DisplayMemberBinding ="{Binding Grid_name}"/>
                     <GridViewColumn Header="MAC" DisplayMemberBinding ="{Binding Grid_mac}"/>
+                    <GridViewColumn Header="Vendor" DisplayMemberBinding ="{Binding Grid_vendor}"/>
                     <GridViewColumn Header="Latency (ms)" DisplayMemberBinding ="{Binding Grid_latency}"/>
                     <GridViewColumn Header="Open ports" DisplayMemberBinding ="{Binding Grid_ports}"/>
                 </GridView>
             </ListView.View>
-        </ListView>
+        </ListView> -->
 
         <!-- <RichTextBox Name="Text_area" Grid.Row="4" Height="Auto" Background="FloralWhite" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Block.LineHeight="1" Margin="5" Padding="10,10,10,10" FontFamily="Consolas" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/> -->
-
-        <ProgressBar Name="pbStatus" Grid.Row="5" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
-        <TextBlock Name="pbText" Grid.Row="6" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
+        <ProgressBar Name="pbStatus" Grid.Row="3" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
+        <TextBlock Name="pbText" Grid.Row="4" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
     </Grid>
 </Window>
 

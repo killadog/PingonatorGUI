@@ -21,6 +21,10 @@ $XAMLReader = New-Object System.Xml.XmlNodeReader $XAML
 $Window = [Windows.Markup.XamlReader]::Load($XAMLReader)
 $XAML.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name ($_.Name) -Value $Window.FindName($_.Name) }
 
+$Data = Import-Csv .\MAC_Manufacturer_Reference.csv
+$oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
+
+
 $Button_Check.Add_Click( {
 
         $net = $TextBox_net.Text.ToString()
@@ -48,7 +52,7 @@ $Button_Check.Add_Click( {
         $net = $net_from_range | Select-Object -Unique
  
         if ($CheckBox_ports.IsChecked -and ($TextBox_ports.Text.ToString() -ne '')) {
-           Write-Host "123124143"
+            Write-Host "123124143"
             $ports_list = @()
             $ports = $TextBox_ports.Text.ToString()
             $ports = $ports.split(",")
@@ -109,7 +113,9 @@ $Button_Check.Add_Click( {
             $file_name = Get-Date -UFormat "%Y%m%d-%H%M%S"
             $gridout = @()
             $delimeter = (Get-Culture).TextInfo.ListSeparator
- 
+            #if ($CheckBox_vendor.IsEnabled -and $CheckBox_vendor.IsChecked){
+            #    $Data = Import-Csv .\MAC_Manufacturer_Reference.csv
+            #}
             Write-Host "Starting at $now`n"
             $all_time = Measure-Command {
                 ForEach ($n in $net) {
@@ -118,7 +124,12 @@ $Button_Check.Add_Click( {
                     Write-Host "Checking $range IPs from $n.$begin to $n.$end"
  
                     $ping_time = Measure-Command {
+
                         $pingout = $begin..$end | ForEach-Object -ThrottleLimit $range -Parallel {
+                            
+                            
+
+                            
                             if (!($_ -in $($using:exclude_list))) {
                                 $ip_list = $using:live_ips
                                 $ip = $using:n + "." + $_
@@ -144,6 +155,13 @@ $Button_Check.Add_Click( {
                                             $MAC = $MAC.ToUpper()
                                         }
                                     }
+
+                                    if (($MAC -ne $null) -and $using:CheckBox_vendor.IsEnabled -and $using:CheckBox_vendor.IsChecked) {
+                                        $oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
+                                        #$vendor = ($($using:Data).where({ ($MAC.replace(':', '').replace('-', '')[0..5] -join '') -in $_.Assignment.split(' ') }) ).ManufacturerName
+                                        $vendor = $oui[$MAC.replace(':', '').replace('-', '')[0..5] -join '']
+                                    }
+
                                     if ($using:CheckBox_latency.IsChecked) {
                                         $ms = $ping.Latency
                                     }
@@ -162,6 +180,7 @@ $Button_Check.Add_Click( {
                                         'IP address'   = $ip
                                         'Name'         = $Name
                                         'MAC address'  = $MAC
+                                        'Vendor'       = $vendor
                                         'Latency (ms)' = $ms
                                         'Open ports'   = $open_ports
                                     }
@@ -173,9 +192,10 @@ $Button_Check.Add_Click( {
                         $live_ips = $($pingout.'IP address').count
     
                         $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] } 
-                        $listview.ItemsSource = $pingout | Select-Object -Property @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
+                        $DataGridview.ItemsSource = $pingout | Select-Object -Property @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
                         @{Name = 'Grid_name'; Expression = { $_.Name } },
                         @{Name = 'Grid_mac'; Expression = { $_.'MAC address' } },
+                        @{Name = 'Grid_vendor'; Expression = { $_.'Vendor' } },
                         @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
                         @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } }
                     }
@@ -222,6 +242,27 @@ $CheckBox_ports.Add_Click( {
         }
         else {
             $TextBox_ports.isEnabled = $false
+        }
+    })
+
+    
+    $CheckBox_exclude.Add_Click( {
+        if ($CheckBox_exclude.isChecked) {
+            $TextBox_exclude.isEnabled = $true
+        }
+        else {
+            $TextBox_exclude.isEnabled = $false
+        }
+    })  
+
+$CheckBox_mac.Add_Click( {
+        if ($CheckBox_mac.isChecked) {
+            $CheckBox_vendor.IsEnabled = $true
+            $CheckBox_vendor.Foreground = "Black"
+        }
+        else {
+            $CheckBox_vendor.IsEnabled = $false
+            $CheckBox_vendor.Foreground = "Gray"
         }
     })
 
