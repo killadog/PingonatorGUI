@@ -59,6 +59,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0">
                 <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
                 <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
+                <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
                 <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True"/>
                 <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
                 <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
