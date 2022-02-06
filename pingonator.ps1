@@ -21,11 +21,11 @@ $XAMLReader = New-Object System.Xml.XmlNodeReader $XAML
 $Window = [Windows.Markup.XamlReader]::Load($XAMLReader)
 $XAML.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name ($_.Name) -Value $Window.FindName($_.Name) }
 
-$Data = Import-Csv .\MAC_Manufacturer_Reference.csv
+#$Data = Import-Csv .\MAC_Manufacturer_Reference.csv
 $oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
 
 
-$Button_Check.Add_Click( {
+$Button_Scan.Add_Click( {
 
         $net = $TextBox_net.Text.ToString()
         if ($net -notmatch '^(((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$|[,]|(-(25[0-5]|(2[0-4]|1\d|[1-9]|)\d),*))){3})+$') {
@@ -124,20 +124,15 @@ $Button_Check.Add_Click( {
                     Write-Host "Checking $range IPs from $n.$begin to $n.$end"
  
                     $ping_time = Measure-Command {
-
                         $pingout = $begin..$end | ForEach-Object -ThrottleLimit $range -Parallel {
-                            
-                            
-
-                            
                             if (!($_ -in $($using:exclude_list))) {
                                 $ip_list = $using:live_ips
                                 $ip = $using:n + "." + $_
-                                <#                             if (!$using:progress) {
-                                $($using:counter).Value++
-                                $status = " " + $($using:counter).Value.ToString() + "/$using:range - $ip"
-                                Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($using:counter).Value / $using:range) * 100)
-                            } #>
+                                
+                                    $($using:counter).Value++
+                                    $status = " " + $($using:counter).Value.ToString() + "/$using:range - $ip"
+                                    Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($using:counter).Value / $using:range) * 100)
+
                                 $ping = Test-Connection $ip -Count $using:count -IPv4 
                                 if ($ping.Status -eq "Success") {
                                     if ($using:CheckBox_resolve.IsChecked) {            
@@ -190,16 +185,20 @@ $Button_Check.Add_Click( {
                         } 
      
                         $live_ips = $($pingout.'IP address').count
-    
-                        $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] } 
-                        $DataGridview.ItemsSource = $pingout | Select-Object -Property @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
-                        @{Name = 'Grid_name'; Expression = { $_.Name } },
-                        @{Name = 'Grid_mac'; Expression = { $_.'MAC address' } },
-                        @{Name = 'Grid_vendor'; Expression = { $_.'Vendor' } },
-                        @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
-                        @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } }
+                        $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] }
+                        $all_pingout += $pingout
+                                    
+                                    
+                        $pbStatus.Value = 90
                     }
- 
+                     
+                    $DataGridview.ItemsSource = $all_pingout | Select-Object -Property @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
+                    @{Name = 'Grid_name'; Expression = { $_.Name } },
+                    @{Name = 'Grid_mac'; Expression = { $_.'MAC address' } },
+                    @{Name = 'Grid_vendor'; Expression = { $_.'Vendor' } },
+                    @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
+                    @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } }
+                    
                     if ($grid) {
                         $gridout += $pingout
                     }
@@ -246,7 +245,7 @@ $CheckBox_ports.Add_Click( {
     })
 
     
-    $CheckBox_exclude.Add_Click( {
+$CheckBox_exclude.Add_Click( {
         if ($CheckBox_exclude.isChecked) {
             $TextBox_exclude.isEnabled = $true
         }
@@ -268,7 +267,7 @@ $CheckBox_mac.Add_Click( {
 
 $Window.Add_KeyDown({
         if ($_.Key -eq 'Enter') {
-            $Button_Check
+            $Button_Scan
         }
     })
 

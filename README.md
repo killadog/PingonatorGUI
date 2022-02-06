@@ -9,9 +9,9 @@
 ##Prepare your own oui.txt
 *IEEE Public OUI and Company ID*
 
-Download https://standards.ieee.org/develop/regauth/oui/oui.csv
+Download https://standards.ieee.org/develop/regauth/oui/oui.csv.
 
-Replace in [Notepad++](https://notepad-plus-plus.org/downloads/)
+Open oui.csv in [Notepad++](https://notepad-plus-plus.org/downloads/) and replace 
 ```
 MA-L,
 <nothing!>
@@ -40,8 +40,9 @@ MA-L,
 "
 <nothing!>
 ```
+Rename file to **oui.txt**
 
-Strange dublicates:
+>Strange dublicates (delete and leave only one):
 080030 
 0001C8
 
