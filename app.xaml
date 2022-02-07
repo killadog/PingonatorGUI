@@ -17,7 +17,13 @@
                 </Style>
             </Style.Resources>
         </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Label.HorizontalContentAlignment" Value="Center" />
+        </Style>
+
     </Window.Resources>
+
     <Grid ShowGridLines="False" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,7 +31,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
-            <RowDefinition Height="Auto" MinHeight="100" MaxHeight="300" />
+            <RowDefinition Height="100" MinHeight="100" MaxHeight="300" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -58,9 +64,9 @@
                 <StackPanel>
                     <WrapPanel>
                         <Label Content="From" />
-                        <TextBox Name="TextBox_begin" Text="1" Width="30" />
+                        <TextBox Name="TextBox_begin" Text="21" Width="30" />
                         <Label Content="to" />
-                        <TextBox Name="TextBox_end" Text="4" Width="30" />
+                        <TextBox Name="TextBox_end" Text="22" Width="30" />
                     </WrapPanel>
                     <StackPanel HorizontalAlignment="Stretch">
                         <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" IsChecked="False"/>
@@ -91,24 +97,45 @@
             </GroupBox>
         </Grid>
 
-        <!-- <ComboBox Grid.Row="0" Name="ComboBox_Interfaces" HorizontalAlignment="Stretch" Margin="5" Height="24" SelectedIndex="0" Padding="8,4,0,0" IsEditable="False"/> -->
-        <Button Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Name="Button_Scan" Content="Scan" Margin="10" IsEnabled="True" />
+        <Button Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="Button_Scan" Content="Scan" Margin="0,0,0,5" IsEnabled="True" />
 
-        <DataGrid Grid.Row="3" Name="DataGridview" IsReadOnly="True" FontFamily="Consolas" Background="FloralWhite" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="FloralWhite" AlternatingRowBackground="WhiteSmoke">
+        <DataGrid Grid.Row="3" Name="DataGridview" Margin="10" IsReadOnly="True" FontFamily="Consolas" Background="FloralWhite" HorizontalAlignment="Center" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="FloralWhite" AlternatingRowBackground="WhiteSmoke">
+
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="10,0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridCell">
+                                <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.CellStyle>
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="IP" Binding ="{Binding Grid_ip}"/>
+                <DataGridTextColumn Header="IP address" Binding ="{Binding Grid_ip}" />
                 <DataGridTextColumn Header="Name" Binding ="{Binding Grid_name}"/>
-                <DataGridTextColumn Header="MAC" Binding ="{Binding Grid_mac}"/>
+                <DataGridTextColumn Header="MAC address" Binding ="{Binding Grid_mac}"/>
                 <DataGridTextColumn Header="Vendor" Binding ="{Binding Grid_vendor}"/>
-                <DataGridTextColumn Header="Latency (ms)" Binding ="{Binding Grid_latency}" />
+                <DataGridTextColumn Header="Latency (ms)" Binding ="{Binding Grid_latency}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Open ports" Binding ="{Binding Grid_ports}"/>
             </DataGrid.Columns>
         </DataGrid >
+
         <GridSplitter Grid.Row="4" Name="Splitter" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         <RichTextBox Name="RichTextBox_Log" Grid.Row="5" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Block.LineHeight="1" Padding="5,0,5,0" Background="Snow" Foreground="#000" FontFamily="Consolas" VerticalScrollBarVisibility="Auto"/>
         <ProgressBar Name="pbStatus" Grid.Row="6" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
         <TextBlock Name="pbText" Grid.Row="6" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
-
- </Grid>
+    </Grid>
 </Window>
 

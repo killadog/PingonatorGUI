@@ -1,18 +1,13 @@
-$Button_Scan.Add_Click( {
+$Button_Scan.Add_Click({
         . $PSScriptRoot\scan.ps1    
-})
+    })
 
 $TextBox_net.Add_GotFocus({
         $TextBox_net.Foreground = "Black"
     })
 
-$CheckBox_exclude.Add_Click( {
-        if ($CheckBox_exclude.isChecked) {
-            $TextBox_exclude.isEnabled = $true
-        }
-        else {
-            $TextBox_exclude.isEnabled = $false
-        }
+$CheckBox_exclude.Add_Click({
+        $CheckBox_exclude.isChecked ? ($TextBox_exclude.isEnabled = $true) : ($TextBox_exclude.isEnabled = $false)
     })
 
 $TextBox_ports.Add_GotFocus({
@@ -20,15 +15,10 @@ $TextBox_ports.Add_GotFocus({
     })
 
 $CheckBox_ports.Add_Click( {
-        if ($CheckBox_ports.isChecked) {
-            $TextBox_ports.isEnabled = $true
-        }
-        else {
-            $TextBox_ports.isEnabled = $false
-        }
+        ($CheckBox_ports.isChecked) ? ($TextBox_ports.isEnabled = $true) : ($TextBox_ports.isEnabled = $false)
     })
 
-$CheckBox_mac.Add_Click( {
+$CheckBox_mac.Add_Click({
         if ($CheckBox_mac.isChecked) {
             $CheckBox_vendor.IsEnabled = $true
             $CheckBox_vendor.Foreground = "Black"
@@ -45,7 +35,6 @@ $Window.Add_KeyDown({
         }
     })
 
-$Splitter.add_LostMouseCapture( {
-        #$Text_area.ScrollToEnd()
+$Splitter.add_LostMouseCapture({
         $RichTextBox_Log.ScrollToEnd()
     })
