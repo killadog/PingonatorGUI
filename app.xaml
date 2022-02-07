@@ -1,4 +1,4 @@
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Title="Pingonator v.0.0.1" Width="800" MinWidth="700" MinHeight="800" WindowStartupLocation="CenterScreen" Background="#E5E5E5">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Title="Pingonator v.0.0.1" Width="800" MinWidth="900" MinHeight="900" WindowStartupLocation="CenterScreen" Background="#E5E5E5">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="FloralWhite" />
@@ -20,14 +20,16 @@
     </Window.Resources>
     <Grid ShowGridLines="False" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" MinHeight="100" MaxHeight="300" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Menu Name="Top_menu" Grid.Row="0" Background="#d1d1d1">
+        <Menu Grid.Row="0" Name="Top_menu" Background="#d1d1d1">
             <MenuItem Header="File">
                 <MenuItem Header="Add-remove programms" Name="Tool_add_remove_programms"/>
                 <MenuItem Header="Exit" Name="Menu_Exit"/>
@@ -39,24 +41,26 @@
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1" ShowGridLines="False" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Grid.Column="0" Header="Network(s) to scan" HorizontalAlignment="Stretch" Padding="5" Margin="5">
+            <GroupBox Grid.Row="0" Grid.Column="0" Header="Network(s) to scan" HorizontalAlignment="Stretch" Padding="5" Margin="5">
                 <StackPanel>
                     <TextBox Name="TextBox_net" Text="192.168.0" HorizontalAlignment="Stretch" TextWrapping="Wrap" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Grid.Column="1" Header="Scan range" HorizontalAlignment="Stretch" Padding="5" Margin="5">
+            <GroupBox Grid.Row="1" Grid.Column="0" Header="Scan range" HorizontalAlignment="Stretch" Padding="5" Margin="5">
                 <StackPanel>
                     <WrapPanel>
                         <Label Content="From" />
                         <TextBox Name="TextBox_begin" Text="1" Width="30" />
                         <Label Content="to" />
-                        <TextBox Name="TextBox_end" Text="50" Width="30" />
+                        <TextBox Name="TextBox_end" Text="4" Width="30" />
                     </WrapPanel>
                     <StackPanel HorizontalAlignment="Stretch">
                         <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" IsChecked="False"/>
@@ -64,29 +68,33 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Grid.Column="2" Header="Ports" HorizontalAlignment="Stretch" Padding="5" Margin="5">
+            <GroupBox Grid.Row="0" Grid.Column="1" Header="Ports" HorizontalAlignment="Stretch" Padding="5" Margin="5">
                 <StackPanel>
                     <CheckBox Name="CheckBox_ports" Content="Detect open ports" IsChecked="False" />
                     <TextBox Name="TextBox_ports" IsEnabled="False" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Grid.Column="3" Header="Options" HorizontalAlignment="Stretch" Padding="5" Margin="5">
-                <StackPanel>
-                    <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
-                    <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
-                    <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
-                    <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True" />
-                    <CheckBox Name="CheckBox_rdp" Content="Check RDP" IsChecked="False"/>
-                    <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
-                    <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
-                </StackPanel>
+            <GroupBox Grid.Row="1" Grid.Column="1" Header="Options" HorizontalAlignment="Stretch" Padding="5" Margin="5">
+                <WrapPanel>
+                    <StackPanel>
+                        <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
+                        <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
+                        <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
+                        <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True" />
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <CheckBox Name="CheckBox_rdp" Content="Check RDP" IsChecked="False"/>
+                        <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
+                        <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
+                    </StackPanel>
+                </WrapPanel>
             </GroupBox>
         </Grid>
 
         <!-- <ComboBox Grid.Row="0" Name="ComboBox_Interfaces" HorizontalAlignment="Stretch" Margin="5" Height="24" SelectedIndex="0" Padding="8,4,0,0" IsEditable="False"/> -->
         <Button Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Name="Button_Scan" Content="Scan" Margin="10" IsEnabled="True" />
 
-        <DataGrid Grid.Row="3" Name="DataGridview" FontFamily="Consolas" Background="FloralWhite" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="FloralWhite" AlternatingRowBackground="WhiteSmoke">
+        <DataGrid Grid.Row="3" Name="DataGridview" IsReadOnly="True" FontFamily="Consolas" Background="FloralWhite" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="FloralWhite" AlternatingRowBackground="WhiteSmoke">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="IP" Binding ="{Binding Grid_ip}"/>
                 <DataGridTextColumn Header="Name" Binding ="{Binding Grid_name}"/>
@@ -96,9 +104,11 @@
                 <DataGridTextColumn Header="Open ports" Binding ="{Binding Grid_ports}"/>
             </DataGrid.Columns>
         </DataGrid >
-        <!-- <RichTextBox Name="Text_area" Grid.Row="4" Height="Auto" Background="FloralWhite" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Block.LineHeight="1" Margin="5" Padding="10,10,10,10" FontFamily="Consolas" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/> -->
-        <ProgressBar Name="pbStatus" Grid.Row="4" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
-        <TextBlock Name="pbText" Grid.Row="5" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
-    </Grid>
+        <GridSplitter Grid.Row="4" Name="Splitter" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <RichTextBox Name="RichTextBox_Log" Grid.Row="5" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Block.LineHeight="1" Padding="5,0,5,0" Background="Snow" Foreground="#000" FontFamily="Consolas" VerticalScrollBarVisibility="Auto"/>
+        <ProgressBar Name="pbStatus" Grid.Row="6" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
+        <TextBlock Name="pbText" Grid.Row="6" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+ </Grid>
 </Window>
 
