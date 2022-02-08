@@ -22,22 +22,27 @@
             <Setter Property="Label.HorizontalContentAlignment" Value="Center" />
         </Style>
 
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+                <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="Yellow" />
+        </Style>
     </Window.Resources>
 
     <Grid ShowGridLines="False" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="8" />
             <RowDefinition Height="100" MinHeight="100" MaxHeight="300" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" Name="Top_menu" Background="#d1d1d1">
             <MenuItem Header="File">
-                <MenuItem Header="Add-remove programms" Name="Tool_add_remove_programms"/>
                 <MenuItem Header="Exit" Name="Menu_Exit"/>
             </MenuItem>
             <MenuItem Header="Help">
@@ -46,96 +51,104 @@
                 <MenuItem Header="About" Name="Menu_About"/>
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1" ShowGridLines="False" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <GroupBox Grid.Row="0" Grid.Column="0" Header="Network(s) to scan" HorizontalAlignment="Stretch" Padding="5" Margin="5">
-                <StackPanel>
-                    <TextBox Name="TextBox_net" Text="192.168.0" HorizontalAlignment="Stretch" TextWrapping="Wrap" />
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Grid.Row="1" Grid.Column="0" Header="Scan range" HorizontalAlignment="Stretch" Padding="5" Margin="5">
-                <StackPanel>
-                    <WrapPanel>
-                        <Label Content="From" />
-                        <TextBox Name="TextBox_begin" Text="21" Width="30" />
-                        <Label Content="to" />
-                        <TextBox Name="TextBox_end" Text="22" Width="30" />
-                    </WrapPanel>
-                    <StackPanel HorizontalAlignment="Stretch">
-                        <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" IsChecked="False"/>
-                        <TextBox Name="TextBox_exclude" HorizontalAlignment="Stretch" IsEnabled="False" />
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Grid.Row="0" Grid.Column="1" Header="Ports" HorizontalAlignment="Stretch" Padding="5" Margin="5">
-                <StackPanel>
-                    <CheckBox Name="CheckBox_ports" Content="Detect open ports" IsChecked="False" />
-                    <TextBox Name="TextBox_ports" IsEnabled="False" />
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Grid.Row="1" Grid.Column="1" Header="Options" HorizontalAlignment="Stretch" Padding="5" Margin="5">
-                <WrapPanel>
-                    <StackPanel>
-                        <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
-                        <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
-                        <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
-                        <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True" />
-                    </StackPanel>
-                    <StackPanel Margin="10,0,0,0">
-                        <CheckBox Name="CheckBox_rdp" Content="Check RDP" IsChecked="False"/>
-                        <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
-                        <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
-                    </StackPanel>
-                </WrapPanel>
-            </GroupBox>
-        </Grid>
+        <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="1" Margin="0,10">
+            <StackPanel>
+                <Grid ShowGridLines="False" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Grid.Row="0" Grid.Column="0" Header="Network(s) to scan" HorizontalAlignment="Stretch" Padding="5" Margin="10,0,8,0">
+                        <StackPanel VerticalAlignment="Center" >
+                            <TextBox Name="TextBox_net" Text="192.168.0" HorizontalAlignment="Stretch" TextWrapping="Wrap" ToolTip="Netwok(s) to scan&#10;&#10;Syntax:&#10;192.168.0&#10;192.168.1-10&#10;192.168.0,10.10.1"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Grid.Column="0" Header="Scan range" HorizontalAlignment="Stretch" Padding="0,5" Margin="10,0,9,0">
+                        <StackPanel VerticalAlignment="Center" >
+                            <WrapPanel>
+                                <Label Content="From" />
+                                <TextBox Name="TextBox_begin" Text="1" Width="30" Height="20" TextAlignment="Center" MaxLength="3" ToolTip="First number of" />
+                                <Label Content="to" />
+                                <TextBox Name="TextBox_end" Text="50" Width="30" Height="20" TextAlignment="Center" MaxLength="3" />
+                            </WrapPanel>
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" Margin="5,10,5,0" IsChecked="False" />
+                                <TextBox Name="TextBox_exclude" HorizontalAlignment="Stretch" IsEnabled="True" Margin="5,5" Visibility="Hidden"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="0" Grid.Column="1" Header="Ports" HorizontalAlignment="Stretch" Padding="5" Margin="0,0,10,0">
+                        <StackPanel VerticalAlignment="Center" >
+                            <CheckBox Name="CheckBox_ports" Content="Detect open ports" IsChecked="False" />
+                            <TextBox Name="TextBox_ports" IsEnabled="True" Margin="0,5" Visibility="Hidden" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Grid.Column="1" Header="Options" HorizontalAlignment="Stretch" Padding="5" Margin="0,0,10,0">
+                        <WrapPanel VerticalAlignment="Center" >
+                            <StackPanel>
+                                <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
+                                <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
+                                <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
+                                <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True" />
+                            </StackPanel>
+                            <StackPanel Margin="10,0,0,0">
+                                <CheckBox Name="CheckBox_rdp" Content="Check RDP" IsChecked="False"/>
+                                <CheckBox Name="CheckBox_grid" Content="Output to a grid view" IsChecked="False"/>
+                                <CheckBox Name="CheckBox_file" Content="Export to CSV file" IsChecked="False"/>
+                            </StackPanel>
+                        </WrapPanel>
+                    </GroupBox>
 
-        <Button Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Name="Button_Scan" Content="Scan" Margin="0,0,0,5" IsEnabled="True" />
+                </Grid>
+                <Button Name="Button_Scan" Content="Scan" Margin="0,5" IsEnabled="True" />
+            </StackPanel>
+        </Border>
 
-        <DataGrid Grid.Row="3" Name="DataGridview" Margin="10" IsReadOnly="True" FontFamily="Consolas" Background="FloralWhite" HorizontalAlignment="Center" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="FloralWhite" AlternatingRowBackground="WhiteSmoke">
+        <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="1" Margin="0,5,0,0" Padding="10">
+            <DataGrid Name="DataGridview" IsReadOnly="True" FontFamily="Consolas" Background="FloralWhite" HorizontalAlignment="Center" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" RowBackground="FloralWhite" AlternatingRowBackground="WhiteSmoke">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="10,0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
 
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Padding" Value="10,0"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="DataGridCell">
-                                <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="IP address" Binding ="{Binding Grid_ip}" />
+                    <DataGridTextColumn Header="Name" Binding ="{Binding Grid_name}"/>
+                    <DataGridTextColumn Header="MAC address" Binding ="{Binding Grid_mac}"/>
+                    <DataGridTextColumn Header="Vendor" Binding ="{Binding Grid_vendor}"/>
+                    <DataGridTextColumn Header="Latency (ms)" Binding ="{Binding Grid_latency}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Open ports" Binding ="{Binding Grid_ports}"/>
+                </DataGrid.Columns>
+            </DataGrid >
+        </Border>
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="IP address" Binding ="{Binding Grid_ip}" />
-                <DataGridTextColumn Header="Name" Binding ="{Binding Grid_name}"/>
-                <DataGridTextColumn Header="MAC address" Binding ="{Binding Grid_mac}"/>
-                <DataGridTextColumn Header="Vendor" Binding ="{Binding Grid_vendor}"/>
-                <DataGridTextColumn Header="Latency (ms)" Binding ="{Binding Grid_latency}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Open ports" Binding ="{Binding Grid_ports}"/>
-            </DataGrid.Columns>
-        </DataGrid >
+        <GridSplitter Grid.Row="3" Name="Splitter" Background="#d1d1d1" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
 
-        <GridSplitter Grid.Row="4" Name="Splitter" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        <RichTextBox Name="RichTextBox_Log" Grid.Row="5" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Block.LineHeight="1" Padding="5,0,5,0" Background="Snow" Foreground="#000" FontFamily="Consolas" VerticalScrollBarVisibility="Auto"/>
-        <ProgressBar Name="pbStatus" Grid.Row="6" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
-        <TextBlock Name="pbText" Grid.Row="6" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
+        <Border Grid.Row="4" BorderBrush="LightGray" BorderThickness="1" Padding="10">
+            <RichTextBox Name="RichTextBox_Log" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True" Block.LineHeight="1" Padding="5,0,5,0" Background="Snow" Foreground="#000" FontFamily="Consolas" VerticalScrollBarVisibility="Auto"/>
+        </Border>
+        <ProgressBar Name="pbStatus" Grid.Row="5" Margin="5" VerticalAlignment="Top" Minimum="0" Maximum="100" Height="20" />
+        <TextBlock Name="pbText" Grid.Row="5" Margin="5" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Top" />
     </Grid>
 </Window>
 

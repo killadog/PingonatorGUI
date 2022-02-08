@@ -3,7 +3,8 @@ if ($net -notmatch '^(((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$|[,]|(-(25[0-5]|
     $PSStyle.Formatting.Error = $PSStyle.Background.BrightRed + $PSStyle.Foreground.BrightWhite
     To_Log("Not valid IP address! Syntax: 192.168.0 or 192.168.0,10.10.12-16")
     $err = $true
-    $TextBox_net.Foreground = "Red"
+    #$TextBox_net.Foreground = "Red"
+    $TextBox_net.Background = "Pink"
 }
 else {
     $net = $net.split(",")
@@ -43,7 +44,8 @@ if ($CheckBox_ports.IsChecked -and ($TextBox_ports.Text.ToString() -ne '')) {
         else {
             Write-Error "Not valid ports! Only [1..65535]. Syntax: 25,80,135,1096-2048"
             $err = $true
-            $TextBox_ports.Foreground = "Red"
+            #$TextBox_ports.Foreground = "Red"
+            $TextBox_ports.Background = "Pink"
         }
     }
     $ports_list = $ports_list | Select-Object -Unique
@@ -74,7 +76,6 @@ if (!$err) {
     $begin = $TextBox_begin.Text.ToString()
     $end = $TextBox_end.Text.ToString()
     $exclude_list = 1
-    $count = 1
     $ports_list = $TextBox_ports.Text.ToString()
 
     $range = [Math]::Abs($end - $begin) + 1 - $exclude_list.Name.count
@@ -101,12 +102,12 @@ if (!$err) {
                         $status = " " + $($using:counter).Value.ToString() + "/$using:range - $ip"
                         Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($using:counter).Value / $using:range) * 100)
                                 
-                        $ping = Test-Connection $ip -Count $using:count -IPv4 
+                        $ping = Test-Connection $ip -Count 1 -IPv4 
                         if ($ping.Status -eq "Success") {
                             if ($using:CheckBox_resolve.IsChecked) {            
                                 try {
-                                    #$Name = Test-Connection $ip -Count 1 -IPv4 -ResolveDestination | Select-Object -ExpandProperty Destination
-                                    $Name = Resolve-DnsName -Name $ip -DnsOnly -ErrorAction Stop | Select-Object -ExpandProperty NameHost
+                                    $Name = Test-Connection $ip -Count 1 -IPv4 -ResolveDestination | Select-Object -ExpandProperty Destination
+                                    #$Name = Resolve-DnsName -Name $ip -DnsOnly -ErrorAction Stop | Select-Object -ExpandProperty NameHost
                                 }
                                 catch {
                                     $Name = $null
@@ -150,7 +151,7 @@ if (!$err) {
                     }
                     return $ip_list
                 } 
-Start-Sleep -Seconds 1
+
                 $live_ips = $($pingout.'IP address').count
                 $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] }
                 $all_pingout += $pingout

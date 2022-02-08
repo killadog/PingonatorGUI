@@ -4,18 +4,20 @@ $Button_Scan.Add_Click({
 
 $TextBox_net.Add_GotFocus({
         $TextBox_net.Foreground = "Black"
+        $TextBox_net.Background = "White"
     })
 
 $CheckBox_exclude.Add_Click({
-        $CheckBox_exclude.isChecked ? ($TextBox_exclude.isEnabled = $true) : ($TextBox_exclude.isEnabled = $false)
+        $CheckBox_exclude.isChecked ? ($TextBox_exclude.Visibility = "Visible") : ($TextBox_exclude.Visibility = "Hidden")
     })
 
 $TextBox_ports.Add_GotFocus({
         $TextBox_ports.Foreground = "Black"
+        $TextBox_ports.Background = "White"
     })
 
 $CheckBox_ports.Add_Click( {
-        ($CheckBox_ports.isChecked) ? ($TextBox_ports.isEnabled = $true) : ($TextBox_ports.isEnabled = $false)
+        $CheckBox_ports.isChecked ? ($TextBox_ports.Visibility = "Visible") : ($TextBox_ports.Visibility = "Hidden")
     })
 
 $CheckBox_mac.Add_Click({

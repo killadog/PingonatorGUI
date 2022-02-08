@@ -6,7 +6,7 @@
 
 *fast and furious*
 
-##Prepare your own oui.txt
+## Prepare your own oui.txt
 *IEEE Public OUI and Company ID*
 
 Download https://standards.ieee.org/develop/regauth/oui/oui.csv.
@@ -40,7 +40,7 @@ MA-L,
 "
 <nothing!>
 ```
-Rename file to **oui.txt**
+Save file as **oui.txt**
 
 >Strange dublicates (delete and leave only one):
 080030 
