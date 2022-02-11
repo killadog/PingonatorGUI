@@ -3,7 +3,7 @@ $Button_Scan.Add_Click({
     })
 
 $TextBox_net.Add_GotFocus({
-        $TextBox_net.Foreground = "Black"
+        #$TextBox_net.Foreground = "Black"
         $TextBox_net.Background = "White"
     })
 
@@ -12,7 +12,7 @@ $CheckBox_exclude.Add_Click({
     })
 
 $TextBox_ports.Add_GotFocus({
-        $TextBox_ports.Foreground = "Black"
+        #$TextBox_ports.Foreground = "Black"
         $TextBox_ports.Background = "White"
     })
 
