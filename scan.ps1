@@ -73,19 +73,20 @@ $exclude_list = $exclude_list | Select-Object -Unique
 } #>
 
 if (!$err) {
+    
     $begin = $TextBox_begin.Text.ToString()
     $end = $TextBox_end.Text.ToString()
     $exclude_list = 1
     $ports_list = $TextBox_ports.Text.ToString()
 
     $range = [Math]::Abs($end - $begin) + 1 - $exclude_list.Name.count
-   # $now = Get-Date -UFormat "%Y/%m/%d-%H:%M:%S"
-   # $file_name = Get-Date -UFormat "%Y%m%d-%H%M%S"
+    # $now = Get-Date -UFormat "%Y/%m/%d-%H:%M:%S"
+    # $file_name = Get-Date -UFormat "%Y%m%d-%H%M%S"
     $gridout = @()
     $delimeter = (Get-Culture).TextInfo.ListSeparator
 
     To_Log("Start scan")
-
+ 
     $all_time = Measure-Command {
         ForEach ($n in $net) {
             [ref]$counter = 0    
@@ -93,7 +94,7 @@ if (!$err) {
             To_Log("Checking $range IPs from $n.$begin to $n.$end")
 
             $ping_time = Measure-Command {
-                $pingout = $begin..$end | ForEach-Object -ThrottleLimit $range -Parallel {
+                $pingout = $begin..$end | ForEach-Object -Parallel {
                     if (!($_ -in $($using:exclude_list))) {
                         $ip_list = $using:live_ips
                         $ip = $using:n + "." + $_
@@ -102,7 +103,7 @@ if (!$err) {
                         $status = " " + $($using:counter).Value.ToString() + "/$using:range - $ip"
                         Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($using:counter).Value / $using:range) * 100)
                                 
-                        $ping = Test-Connection $ip -Count 1 -IPv4 
+                        $ping = Test-Connection $ip -Count 1 -IPv4
                         if ($ping.Status -eq "Success") {
                             if ($using:CheckBox_resolve.IsChecked) {            
                                 try {
@@ -150,8 +151,10 @@ if (!$err) {
                         }
                     }
                     return $ip_list
-                } 
-
+Start-Sleep -Milliseconds 50
+                    [System.Windows.Forms.Application]::DoEvents()
+                } -ThrottleLimit $range
+            
                 $live_ips = $($pingout.'IP address').count
                 $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] }
                 $all_pingout += $pingout
@@ -165,18 +168,18 @@ if (!$err) {
             @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
             @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } }
             
-            if ($grid) {
+            <#             if ($grid) {
                 $gridout += $pingout
             }
 
             if ($file) {
                 $pingout | Export-Csv -Append -path $env:TEMP\$file_name.csv -NoTypeInformation -Delimiter $delimeter
-            }
+            } #>
             To_Log("Total $live_ips live IPs from $range [$n.$begin..$n.$end]")
             $ping_time = $ping_time.ToString().SubString(0, 8)
             To_Log("Elapsed time $ping_time")
         }
-    }    
+    }  
     
     $all_time = $all_time.ToString().SubString(0, 8)
     To_Log("All time: $all_time")
@@ -189,4 +192,9 @@ if (!$err) {
     Write-Host "CSV file saved to $($PSStyle.Foreground.Yellow)$env:TEMP\$file_name.csv$($PSStyle.Reset)"
     Start-Process $env:TEMP\$file_name.csv
 } #>
+
+
+
+
+
 }

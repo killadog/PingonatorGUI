@@ -29,6 +29,5 @@ $oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
 
 . $PSScriptRoot\actions.ps1
 
-[void]$Window.ShowDialog() | out-null
 
-
+[void]$Window.ShowDialog() | out-null 
