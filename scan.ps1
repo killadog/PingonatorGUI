@@ -101,6 +101,10 @@ if (!$err) {
         $sync.CheckBox_mac_IsChecked_state = $CheckBox_mac.IsChecked
         $sync.CheckBox_vendor_IsChecked_state = $CheckBox_vendor.IsChecked
         $sync.CheckBox_vendor_IsEnabled_state = $CheckBox_vendor.IsChecked
+        $sync.DataGridview_ItemsSource = $DataGridview.ItemsSource
+        #$sync.all_pingout = $all_pingout
+        
+
         $sync.oui = $oui
 
         $Code = {
@@ -112,8 +116,8 @@ if (!$err) {
                 $sync.RichTextBox_Log.AppendText("$now $Log_text")
                 $sync.RichTextBox_Log.ScrollToEnd()
             }
-
-            $sync.exclude_list = 1
+            
+            $sync.exclude_list = 0
             #$ports_list = $TextBox_ports.Text.ToString()
 
             #$range = [Math]::Abs($sync.end - $sync.begin) + 1 - $($sync.exclude_list).Name.count
@@ -215,37 +219,40 @@ if (!$err) {
                                             To_Log($ip_list)
                                         })                          
                                 }
-                                return $ip_list  
+                                #  return $ip_list  
                             }
                             
+                            return $ip_list 
+                            $Window.Dispatcher.Invoke([action] {
+                                    To_Log($ip_list)
+                                })
                         }
                 
-                        $live_ips = $($pingout.'IP address').count
+                        #$live_ips = $($pingout.'IP address').count
                         $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] }
                         $all_pingout += $pingout
                     }
-             
-
-                    $DataGridview.ItemsSource = $all_pingout | Select-Object -Property `
-                    @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
-                    @{Name = 'Grid_name'; Expression = { $_.Name } },
-                    @{Name = 'Grid_mac'; Expression = { $_.'MAC address' } },
-                    @{Name = 'Grid_vendor'; Expression = { $_.'Vendor' } },
-                    @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
-                    @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } }
-            
+                
+                    
                     <#             if ($grid) {
                 $gridout += $pingout
             }
             if ($file) {
                 $pingout | Export-Csv -Append -path $env:TEMP\$file_name.csv -NoTypeInformation -Delimiter $delimeter
             } #>
-                    $Window.Dispatcher.Invoke([action] {
-                            To_Log("Total $live_ips live IPs from $range [$n.$begin..$n.$end]")
-                            $ping_time = $ping_time.ToString().SubString(0, 8)
-                            To_Log("Elapsed time $ping_time")
-                        })
+
                 }
+
+                $Window.Dispatcher.Invoke([action] {
+                        To_Log("Total $live_ips live IPs from $range [$n.$begin..$n.$end]")
+                        $ping_time = $ping_time.ToString().SubString(0, 8)
+                        To_Log("Elapsed time $ping_time")
+                        To_Log ("----------")
+                        To_Log ($pingout)
+                        To_Log ("----------")
+                        To_Log ($all_pingout)
+                    })
+
             }  
         
 
@@ -253,8 +260,22 @@ if (!$err) {
             $Window.Dispatcher.Invoke([action] {
                     $all_time = $all_time.ToString().SubString(0, 8)
                     To_Log("All time: $all_time")
+                    To_Log ("123123")
+                    To_Log ($all_pingout)
+                    To_Log ("asdasdf")
+                    To_Log ($Global:all_pingout)
+    
                 })
-            
+                             
+            <#            $DataGridview.ItemsSource = $sync.all_pingout | Select-Object -Property `
+            @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
+            @{Name = 'Grid_name'; Expression = { $_.Name } },
+            @{Name = 'Grid_mac'; Expression = { $_.'MAC address' } },
+            @{Name = 'Grid_vendor'; Expression = { $_.'Vendor' } },
+            @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
+            @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } } #>
+
+
             <#         if ($grid) {
     $gridout | Out-GridView -Title "[$now] live IPs from $net"
 } #>
@@ -263,15 +284,18 @@ if (!$err) {
     Write-Host "CSV file saved to $($PSStyle.Foreground.Yellow)$env:TEMP\$file_name.csv$($PSStyle.Reset)"
     Start-Process $env:TEMP\$file_name.csv
 } #>
-
+            $Global:sync.Action = $True
         }
 
-        $Global:sync.Action = $True
+        
 
 
         $PSinstance = [powershell]::Create()
         $PSinstance.Runspace = $Runspace
         $PSinstance.AddScript($Code)
         $PSinstance.InvokeAsync()
+
+
     }
+
 }

@@ -72,9 +72,9 @@
                         <StackPanel VerticalAlignment="Center" >
                             <WrapPanel>
                                 <Label Content="From" />
-                                <TextBox Name="TextBox_begin" Text="21" Width="30" Height="20" TextAlignment="Center" MaxLength="3" ToolTip="First number of" />
+                                <TextBox Name="TextBox_begin" Text="1" Width="30" Height="20" TextAlignment="Center" MaxLength="3" ToolTip="First number of" />
                                 <Label Content="to" />
-                                <TextBox Name="TextBox_end" Text="24" Width="30" Height="20" TextAlignment="Center" MaxLength="3" />
+                                <TextBox Name="TextBox_end" Text="2" Width="30" Height="20" TextAlignment="Center" MaxLength="3" />
                             </WrapPanel>
                             <StackPanel HorizontalAlignment="Stretch">
                                 <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" Margin="5,10,5,0" IsChecked="False" />
@@ -91,8 +91,8 @@
                     <GroupBox Grid.Row="1" Grid.Column="1" Header="Options" HorizontalAlignment="Stretch" Padding="5" Margin="0,0,10,0">
                         <WrapPanel VerticalAlignment="Center" >
                             <StackPanel>
-                                <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="True"/>
-                                <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="True"/>
+                                <CheckBox Name="CheckBox_resolve" Content="Show resolved names" IsChecked="False"/>
+                                <CheckBox Name="CheckBox_mac" Content="Show mac addresses" IsChecked="False"/>
                                 <CheckBox Name="CheckBox_vendor" Content="Show vendor" IsChecked="True"/>
                                 <CheckBox Name="CheckBox_latency" Content="Show latency" IsChecked="True" />
                             </StackPanel>

@@ -36,6 +36,7 @@ $sync.CheckBox_resolve = $Window.FindName("CheckBox_resolve")
 
 $Global:sync.Action = $True
 
+
 $oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
 
 . $PSScriptRoot\actions.ps1
