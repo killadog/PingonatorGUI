@@ -87,6 +87,7 @@ if (!$err) {
 
     To_Log("Start scan")
  
+
     $all_time = Measure-Command {
         ForEach ($n in $net) {
             [ref]$counter = 0    
@@ -102,7 +103,9 @@ if (!$err) {
                         $($using:counter).Value++
                         $status = " " + $($using:counter).Value.ToString() + "/$using:range - $ip"
                         Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($using:counter).Value / $using:range) * 100)
-                                
+                        #$sync.pbStatus.Value = (($($using:counter).Value / $using:range) * 100)
+                        #$sync.pbStatus.Value = 90
+
                         $ping = Test-Connection $ip -Count 1 -IPv4
                         if ($ping.Status -eq "Success") {
                             if ($using:CheckBox_resolve.IsChecked) {            
@@ -147,14 +150,15 @@ if (!$err) {
                                 'Vendor'       = $vendor
                                 'Latency (ms)' = $ms
                                 'Open ports'   = $open_ports
-                            }
+                            }                       
+                            $RichTextBox_Log.AppendText("1241`n")
+
                         }
                     }
                     return $ip_list
-Start-Sleep -Milliseconds 50
-                    [System.Windows.Forms.Application]::DoEvents()
+                    
                 } -ThrottleLimit $range
-            
+                
                 $live_ips = $($pingout.'IP address').count
                 $pingout = $pingout | Sort-Object { $_.'IP Address' -as [Version] }
                 $all_pingout += $pingout
@@ -178,9 +182,12 @@ Start-Sleep -Milliseconds 50
             To_Log("Total $live_ips live IPs from $range [$n.$begin..$n.$end]")
             $ping_time = $ping_time.ToString().SubString(0, 8)
             To_Log("Elapsed time $ping_time")
+           
         }
     }  
-    
+
+
+    #$pbStatus.Value = 90
     $all_time = $all_time.ToString().SubString(0, 8)
     To_Log("All time: $all_time")
 
