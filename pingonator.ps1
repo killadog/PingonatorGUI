@@ -23,10 +23,26 @@ Add-Type -AssemblyName presentationframework
 [xml]$XAML = Get-Content "$PSScriptRoot\app.xaml"
 $XAMLReader = New-Object System.Xml.XmlNodeReader $XAML
 $Window = [Windows.Markup.XamlReader]::Load($XAMLReader)
-$XAML.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name ($_.Name) -Value $Window.FindName($_.Name) }
+$XAML.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name $_.Name -Value $Window.FindName($_.Name) }
+
+
+$Global:sync = [hashtable]::Synchronized(@{ })
+
+$sync.Window = $Window.FindName("Window")
+$sync.pbStatus = $Window.FindName("pbStatus")
+$sync.RichTextBox_Log = $Window.FindName("RichTextBox_Log")
+$sync.DataGridview = $Window.FindName("DataGridview")
+$sync.CheckBox_resolve = $Window.FindName("CheckBox_resolve")
+
+$Global:sync.Action = $True
 
 $oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
 
 . $PSScriptRoot\actions.ps1
 
-[void]$Window.ShowDialog() | out-null 
+[void]$Window.ShowDialog() | out-null
+"Clear Runspace"
+if ($Runspace -ne $null) {
+    $Runspace.Close()
+    $Runspace.Dispose()
+} 

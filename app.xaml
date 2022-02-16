@@ -37,7 +37,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="8" />
-            <RowDefinition Height="100" MinHeight="100" MaxHeight="300" />
+            <!-- <RowDefinition Height="100" MinHeight="100" MaxHeight="300" /> -->
+            <RowDefinition Height="300" MinHeight="100" MaxHeight="300" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
