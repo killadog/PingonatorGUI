@@ -42,7 +42,7 @@ $oui = Get-Content -raw .\oui.txt | ConvertFrom-StringData
 
 [void]$Window.ShowDialog() | out-null
 "Clear Runspace"
-if ($Runspace -ne $null) {
+if ($null -ne $Runspace) {
     $Runspace.Close()
     $Runspace.Dispose()
 } 

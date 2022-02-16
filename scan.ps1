@@ -3,7 +3,6 @@ if ($net -notmatch '^(((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$|[,]|(-(25[0-5]|
     $PSStyle.Formatting.Error = $PSStyle.Background.BrightRed + $PSStyle.Foreground.BrightWhite
     To_Log("Not valid IP address! Syntax: 192.168.0 or 192.168.0,10.10.12-16")
     $err = $true
-    #$TextBox_net.Foreground = "Red"
     $TextBox_net.Background = "Pink"
 }
 else {
@@ -26,7 +25,6 @@ else {
 }
 
 if ($CheckBox_ports.IsChecked -and ($TextBox_ports.Text.ToString() -ne '')) {
-    Write-Host "123124143"
     $ports_list = @()
     $ports = $TextBox_ports.Text.ToString()
     $ports = $ports.split(",")
@@ -44,7 +42,6 @@ if ($CheckBox_ports.IsChecked -and ($TextBox_ports.Text.ToString() -ne '')) {
         else {
             Write-Error "Not valid ports! Only [1..65535]. Syntax: 25,80,135,1096-2048"
             $err = $true
-            #$TextBox_ports.Foreground = "Red"
             $TextBox_ports.Background = "Pink"
         }
     }
@@ -74,7 +71,7 @@ $exclude_list = $exclude_list | Select-Object -Unique
 
 if (!$err) {
     if ($Global:sync.Action -eq $True) {
-        if ($Runspace -ne $null) {
+        if ($null -ne $Runspace) {
             $Runspace.Close()
             $Runspace.Dispose()
         } 
@@ -113,7 +110,7 @@ if (!$err) {
                 )
                 $now = Get-Date -UFormat "`n[%Y/%m/%d-%H:%M:%S] "
                 $sync.RichTextBox_Log.AppendText("$now $Log_text")
-                $sync.RichTextBox_Log.ScrollToEnd(); 
+                $sync.RichTextBox_Log.ScrollToEnd()
             }
 
             $sync.exclude_list = 1
@@ -155,96 +152,72 @@ if (!$err) {
                                 $Window.Dispatcher.Invoke([action] {
                                         To_Log($ip)
                                     })
-                                #$($sync.counter).Value++
-                                $status = " " + $($sync.counter).Value.ToString() + "/$using:range - $ip"
-                                Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($sync.counter).Value / $using:range) * 100)
+                                # $($sync.counter).Value++
+                                #$status = " " + $($sync.counter).Value.ToString() + "/$using:range - $ip"
+                                #Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($sync.counter).Value / $using:range) * 100)
                                 $Window.Dispatcher.Invoke([action] {
-                                        Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($sync.counter).Value / $using:range) * 100)
-                                        $sync.pbStatus.Value = (($counter / $range) * 100)
-                                     
-                                        #$sync.pbStatus.Value = Get-Random -Maximum 100
-                                        # $sync.pbStatus.Value = 90
+                                        #Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($sync.counter).Value / $using:range) * 100)
+                                        #$sync.pbStatus.Value = (($counter / $range) * 100)
                                     })
-                                #$sync.pbStatus.Value = (($($using:counter).Value / $using:range) * 100)
-                                #$sync.pbStatus.Value = 90
-                                Start-Job -ScriptBlock {
+                                   
+                                $ping = Test-Connection $ip -Count 1 -IPv4
+                                if ($ping.Status -eq "Success") {
+                                    $Window.Dispatcher.Invoke([action] {
+                                            To_Log($ping.Status)
+                                        })
 
-                                    param (
-                               <         $sync.Window,
-                                        $sync.pbStatus,
-                                        $sync.RichTextBox_Log,
-                                        $sync.DataGridview,
-                                        $sync.CheckBox_resolve,
-                                        $sync.net,
-                                        $sync.begin,
-                                        $sync.end 
-                                    <#     $Window,
-                                        $pbStatus,
-                                        $RichTextBox_Log,
-                                        $DataGridview,
-                                        $CheckBox_resolve,
-                                        $net,
-                                        $begin,
-                                        $end #>
-                                    )
-
-                                    $ping = Test-Connection $ip -Count 1 -IPv4
-                                    if ($ping.Status -eq "Success") {
-                                        $Window.Dispatcher.Invoke([action] {
-                                                To_Log($ping.Status)
-                                            })
-
-                                        if ($sync.CheckBox_resolve_IsChecked_state) {            
-                                            try {
-                                                $Name = Test-Connection $ip -Count 1 -IPv4 -ResolveDestination | Select-Object -ExpandProperty Destination
-                                                #$Name = Resolve-DnsName -Name $ip -DnsOnly -ErrorAction Stop | Select-Object -ExpandProperty NameHost
-                                            }
-                                            catch {
-                                                $Name = $null
-                                            }
+                                    if ($sync.CheckBox_resolve_IsChecked_state) {            
+                                        try {
+                                            $Name = Test-Connection $ip -Count 1 -IPv4 -ResolveDestination | Select-Object -ExpandProperty Destination
+                                            #$Name = Resolve-DnsName -Name $ip -DnsOnly -ErrorAction Stop | Select-Object -ExpandProperty NameHost
                                         }
-                                        if ($sync.CheckBox_mac_IsChecked_state) {
-                                            $MAC = (arp -a $ip | Select-String '([0-9a-f]{2}-){5}[0-9a-f]{2}').Matches.Value
-                                            if ($MAC) {
-                                                $MAC = $MAC.ToUpper()
-                                            }
+                                        catch {
+                                            $Name = $null
                                         }
-
-                                        if (($MAC -ne $null) -and $sync.CheckBox_vendor_IsEnabled_state -and $sync.CheckBox_vendor_IsChecked_state) {
-                                            $oui = $sync.oui
-                                            $vendor = $oui[$MAC.replace(':', '').replace('-', '')[0..5] -join '']
-                                        }
-
-                                        if ($using:CheckBox_latency.IsChecked) {
-                                            $ms = $ping.Latency
-                                        }
-
-                                        if ($using:CheckBox_ports.IsChecked) { 
-                                            ForEach ($p in $using:ports_list) {
-                                                $check_port = Test-NetConnection -ComputerName $ip -InformationLevel Quiet -Port $p -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-                                                #Write-Progress -Completed -Activity "make progress bar dissapear"
-                                                if ($check_port) {
-                                                    $open_ports += "$p "
-                                                }
-                                            } 
-                                        }
-                       
-                                        $ip_list += [PSCustomObject] @{
-                                            'IP address'   = $ip
-                                            'Name'         = $Name
-                                            'MAC address'  = $MAC
-                                            'Vendor'       = $vendor
-                                            'Latency (ms)' = $ms
-                                            'Open ports'   = $open_ports
-                                        }
-                                
-                                        $Window.Dispatcher.Invoke([action] {
-                                                To_Log($ip_list)
-                                            })                          
                                     }
-                                } -ArgumentList $sync.Window, $sync.pbStatus, $sync.RichTextBox_Log, $sync.DataGridview, $sync.CheckBox_resolve, $sync.net, $sync.begin, $sync.end
+
+                                    if ($sync.CheckBox_mac_IsChecked_state) {
+                                        $MAC = (arp -a $ip | Select-String '([0-9a-f]{2}-){5}[0-9a-f]{2}').Matches.Value
+                                        if ($MAC) {
+                                            $MAC = $MAC.ToUpper()
+                                        }
+                                    }
+
+                                    if (($MAC -ne $null) -and $sync.CheckBox_vendor_IsEnabled_state -and $sync.CheckBox_vendor_IsChecked_state) {
+                                        $oui = $sync.oui
+                                        $vendor = $oui[$MAC.replace(':', '').replace('-', '')[0..5] -join '']
+                                    }
+
+                                    if ($using:CheckBox_latency.IsChecked) {
+                                        $ms = $ping.Latency
+                                    }
+
+                                    if ($using:CheckBox_ports.IsChecked) { 
+                                        ForEach ($p in $using:ports_list) {
+                                            $check_port = Test-NetConnection -ComputerName $ip -InformationLevel Quiet -Port $p -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+                                            #Write-Progress -Completed -Activity "make progress bar dissapear"
+                                            if ($check_port) {
+                                                $open_ports += "$p "
+                                            }
+                                        } 
+                                    }
+                       
+                                    $ip_list += [PSCustomObject] @{
+                                        'IP address'   = $ip
+                                        'Name'         = $Name
+                                        'MAC address'  = $MAC
+                                        'Vendor'       = $vendor
+                                        'Latency (ms)' = $ms
+                                        'Open ports'   = $open_ports
+                                    }
+                                
+                                    $Window.Dispatcher.Invoke([action] {
+                                            To_Log($ip_list)
+                                        })                          
+                                }
+                                return $ip_list  
                             }
-                            return $ip_list
+                            
                         }
                 
                         $live_ips = $($pingout.'IP address').count
@@ -252,15 +225,6 @@ if (!$err) {
                         $all_pingout += $pingout
                     }
              
-                    <#              $Window.Dispatcher.Invoke([action] {                    
-                        $sync.DataGridview.ItemsSource = $all_pingout | Select-Object -Property `
-                        @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
-                        @{Name = 'Grid_name'; Expression = { $_.Name } },
-                        @{Name = 'Grid_mac'; Expression = { $_.'MAC address' } },
-                        @{Name = 'Grid_vendor'; Expression = { $_.'Vendor' } },
-                        @{Name = 'Grid_latency'; Expression = { $_.'Latency (ms)' } },
-                        @{Name = 'Grid_ports'; Expression = { $_.'Open ports' } }
-                    }) #>
 
                     $DataGridview.ItemsSource = $all_pingout | Select-Object -Property `
                     @{Name = 'Grid_ip'; Expression = { $_.'IP address' } }, 
@@ -273,7 +237,6 @@ if (!$err) {
                     <#             if ($grid) {
                 $gridout += $pingout
             }
-
             if ($file) {
                 $pingout | Export-Csv -Append -path $env:TEMP\$file_name.csv -NoTypeInformation -Delimiter $delimeter
             } #>
@@ -284,7 +247,7 @@ if (!$err) {
                         })
                 }
             }  
-
+        
 
             
             $Window.Dispatcher.Invoke([action] {
@@ -302,11 +265,13 @@ if (!$err) {
 } #>
 
         }
-    }
-    $Global:sync.Action = $True
-}
 
-$PSinstance = [powershell]::Create()
-$PSinstance.Runspace = $Runspace
-$PSinstance.AddScript($Code)
-$PSinstance.InvokeAsync()
+        $Global:sync.Action = $True
+
+
+        $PSinstance = [powershell]::Create()
+        $PSinstance.Runspace = $Runspace
+        $PSinstance.AddScript($Code)
+        $PSinstance.InvokeAsync()
+    }
+}
