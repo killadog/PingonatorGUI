@@ -6,44 +6,11 @@
 
 *fast and furious*
 
+GUI version of [Pingonator](https://github.com/killadog/Pingonator)
+
+<p align="center">
+<img src="img/pingonatorgui.png" alt="PingonatorGUI" width="650" />
+</p>
+
 ## Prepare your own oui.txt
-*IEEE Public OUI and Company ID*
-
-Download https://standards.ieee.org/develop/regauth/oui/oui.csv.
-
-Open oui.csv in [Notepad++](https://notepad-plus-plus.org/downloads/) and replace 
-```
-MA-L,
-<nothing!>
-```
-```
-([0-9a-fA-F]{6},)("(.*?)")((,".*")|(.*))
-\1\2
-```
-```
-^([0-9a-fA-F]{6}),
-"\1",
-```
-```
-^("[0-9a-fA-F]{6}",)(.*?)$
-\1\2"
-```
-```
-^("[0-9a-fA-F]{6}",)([^"](.*?))$
-\1"\2
-```
-```
-","
-=
-```
-```
-"
-<nothing!>
-```
-Save file as **oui.txt**
-
->Strange dublicates (delete and leave only one):
-080030 
-0001C8
-
-
+If you want to have the newest OUI list follow the [instructions](https://github.com/killadog/hatools#oui-macro-for-notepad).

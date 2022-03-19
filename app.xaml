@@ -64,7 +64,7 @@
                     </Grid.ColumnDefinitions>
                     <GroupBox Grid.Row="0" Grid.Column="0" Header="Network(s) to scan" HorizontalAlignment="Stretch" Padding="5" Margin="10,0,8,0">
                         <StackPanel VerticalAlignment="Center" >
-                            <TextBox Name="TextBox_net" Text="192.168.13" HorizontalAlignment="Stretch" TextWrapping="Wrap" ToolTip="Netwok(s) to scan&#10;&#10;Syntax:&#10;192.168.0&#10;192.168.1-10&#10;192.168.0,10.10.1-3"/>
+                            <TextBox Name="TextBox_net" Text="192.168.0" HorizontalAlignment="Stretch" TextWrapping="Wrap" ToolTip="Netwok(s) to scan&#10;&#10;Syntax:&#10;192.168.0&#10;192.168.1-10&#10;192.168.0,10.10.1-3"/>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Grid.Row="1" Grid.Column="0" Header="Scan range" HorizontalAlignment="Stretch" Padding="0,5" Margin="10,0,9,0">
@@ -73,7 +73,7 @@
                                 <Label Content="From" />
                                 <TextBox Name="TextBox_begin" Text="1" Width="30" Height="20" TextAlignment="Center" MaxLength="3" ToolTip="First number of" />
                                 <Label Content="to" />
-                                <TextBox Name="TextBox_end" Text="4" Width="30" Height="20" TextAlignment="Center" MaxLength="3" />
+                                <TextBox Name="TextBox_end" Text="254" Width="30" Height="20" TextAlignment="Center" MaxLength="3" />
                             </WrapPanel>
                             <StackPanel HorizontalAlignment="Stretch">
                                 <CheckBox Name="CheckBox_exclude" Content="Exlude hosts from check" Margin="5,10,5,0" IsChecked="False" />

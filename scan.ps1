@@ -26,7 +26,6 @@ else {
 }
 
 if ($CheckBox_ports.IsChecked -and ($TextBox_ports.Text.ToString() -ne '')) {
-    Write-Host "123124143"
     $ports_list = @()
     $ports = $TextBox_ports.Text.ToString()
     $ports = $ports.split(",")
@@ -51,8 +50,8 @@ if ($CheckBox_ports.IsChecked -and ($TextBox_ports.Text.ToString() -ne '')) {
     $ports_list = $ports_list | Select-Object -Unique
 } 
 
-<# $exclude_list = @()
-if ($exclude) {
+$exclude_list = @()
+<# if ($exclude) {
 foreach ($e in $exclude) {
  if (($e -match '^(25[0-5]|(2[0-4]|1\d|[1-9]|)\d)$') -or ($e -match '^(25[0-5]|(2[0-4]|1\d|[1-9]|)\d)-(25[0-5]|(2[0-4]|1\d|[1-9]|)\d)$')) {
      if ($e -like "*-*") {
@@ -87,7 +86,6 @@ if (!$err) {
 
     To_Log("Start scan")
  
-
     $all_time = Measure-Command {
         ForEach ($n in $net) {
             [ref]$counter = 0    
@@ -102,9 +100,7 @@ if (!$err) {
                         
                         $($using:counter).Value++
                         $status = " " + $($using:counter).Value.ToString() + "/$using:range - $ip"
-                        Write-Progress -Activity "Ping" -Status $status -PercentComplete (($($using:counter).Value / $using:range) * 100)
-                        #$sync.pbStatus.Value = (($($using:counter).Value / $using:range) * 100)
-                        #$sync.pbStatus.Value = 90
+                        Write-Progress -Activity "Ping" -Status $status -PercentComplete ($($using:counter).Value / ($using:range / 100))
 
                         $ping = Test-Connection $ip -Count 1 -IPv4
                         if ($ping.Status -eq "Success") {
@@ -136,7 +132,6 @@ if (!$err) {
                             if ($using:CheckBox_ports.IsChecked) { 
                                 ForEach ($p in $using:ports_list) {
                                     $check_port = Test-NetConnection -ComputerName $ip -InformationLevel Quiet -Port $p -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-                                    #Write-Progress -Completed -Activity "make progress bar dissapear"
                                     if ($check_port) {
                                         $open_ports += "$p "
                                     }
@@ -151,8 +146,6 @@ if (!$err) {
                                 'Latency (ms)' = $ms
                                 'Open ports'   = $open_ports
                             }                       
-                            $RichTextBox_Log.AppendText("1241`n")
-
                         }
                     }
                     return $ip_list
@@ -186,8 +179,6 @@ if (!$err) {
         }
     }  
 
-
-    #$pbStatus.Value = 90
     $all_time = $all_time.ToString().SubString(0, 8)
     To_Log("All time: $all_time")
 
